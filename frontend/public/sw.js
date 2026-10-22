@@ -1,0 +1,5 @@
+const CACHE='daybreak-shell-v2';
+self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/offline.html','/offline-reader.js','/offline-crypto.js','/icon-192.png'])));});
+self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('daybreak-shell-')&&k!==CACHE).map(k=>caches.delete(k)))));});
+// Never cache authentication, API responses, or personalized HTML.
+self.addEventListener('fetch',event=>{const u=new URL(event.request.url);if(event.request.method!=='GET'||u.origin!==location.origin)return;if(event.request.mode==='navigate'){event.respondWith(fetch(event.request).catch(()=>caches.match('/offline.html')));return;}if(u.pathname.startsWith('/_next/static/')||['/offline-reader.js','/offline-crypto.js','/webb.jpg','/icon-192.png','/icon-512.png'].includes(u.pathname)){event.respondWith(caches.open(CACHE).then(async c=>{const stored=await c.match(event.request);if(stored)return stored;const response=await fetch(event.request);if(response.ok)await c.put(event.request,response.clone());return response;}));}});

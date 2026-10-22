@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.next-check/
+.env
+.env.local
+.venv/
+__pycache__/
+.pytest_cache/
+*.tsbuildinfo
+*.log
+tmp/
+.ruff_cache/
