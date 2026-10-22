@@ -133,7 +133,7 @@ async def tick():
         log.warning("Delivery status provider is unavailable")
     jobs = await db.rpc("claim_job", {})
     if not jobs:
-        return
+        return False
     job = jobs[0]
     try:
         await run_leased(job)
@@ -152,6 +152,7 @@ async def tick():
             if final
             else "Retrying a temporary failure.",
         )
+    return True
 
 
 async def main():
